@@ -1,0 +1,92 @@
+/* General Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Styles for the navigation bar */
+.navbar {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Main section */
+header {
+  background-size: cover;
+  background-position: center;
+  color: rgb(7, 31, 93);
+  text-align: center;
+}
+
+header h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+/* Excursion cards */
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.card-title {
+  font-weight: bold;
+}
+
+.card-body {
+  text-align: center;
+}
+
+/* "About Us" section */
+#about {
+  background-color: #e9ecef;
+  text-align: center;
+}
+
+#about p {
+  font-size: 1.2rem;
+}
+
+/* Contact form */
+#contact form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+#contact form .form-control {
+  border-radius: 0;
+}
+
+#contact form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 0;
+}
+
+#contact form button:hover {
+  background-color: #0056b3;
+}
+
+body {
+  padding-top: 70px; /* Height of the menu */
+}
+
+.nav1-link {
+  color: white;
+  text-decoration: none;
+}
+
+.nav2-link {
+  color: white;
+  margin-left: 3rem;
+  text-decoration: none;
+}

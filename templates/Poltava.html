@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poltava Adventures</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('index') }}">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#excursions">Excursions</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#contact">Leave a Review</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          {% if 'user_id' in session %}
+            <li class="nav-item"><a class="nav2-link" href="{{ url_for('dashboard') }}">{{ session['user_name'] }}</a></li>
+            <li class="nav-item"><a class="nav1-link btn btn-danger text-white" href="{{ url_for('logout') }}">Logout</a></li>
+          {% else %}
+            <li class="nav-item"><a class="nav1-link" href="{{ url_for('login') }}">Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Poltava Adventures</h1>
+    <img src="/static/images/Poltava.jpg" class="img-fluid rounded mx-auto d-block mb-4" alt="Poltava">
+    <p class="text-center lead">Poltava is the heart of history and culture! Visit places that preserve the richness of Ukrainian heritage.</p>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Itinerary:</h4>
+        <ul>
+          <li>Poltava Battle Museum.</li>
+          <li>Visit to the "Cossack Glory" Monument.</li>
+          <li>Walk in "Peremoha" Park.</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h4>What's Included:</h4>
+        <ul>
+          <li>Knowledgeable history guide.</li>
+          <li>Transportation.</li>
+          <li>Local cuisine (traditional dumplings).</li>
+        </ul>
+        <h4>Price: 2500 UAH</h4>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('dashboard') }}" class="btn btn-success btn-lg">Book Now</a>
+    </div>
+    <div class="text-center mt-4">
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">Return to Home</a>
+    </div>
+
+    <!-- Interactive Map -->
+    <div id="map"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const map = L.map('map').setView([49.5883, 34.5514], 13); // Center of Poltava
+
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      // Route locations
+      const locations = [
+        { coords: [49.5882, 34.5514], name: "Poltava Battle Museum" },
+        { coords: [49.5848, 34.5482], name: "'Cossack Glory' Monument" },
+        { coords: [49.5870, 34.5607], name: "Peremoha Park" }
+      ];
+
+      // Add markers to the map
+      locations.forEach(location => {
+        L.marker(location.coords)
+          .addTo(map)
+          .bindPopup(`<b>${location.name}</b>`);
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+

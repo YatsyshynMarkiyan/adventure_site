@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vinnytsia Fountain</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('index') }}">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#excursions">Excursions</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#contact">Leave Feedback</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          {% if 'user_id' in session %}
+            <li class="nav-item"><a class="nav2-link" href="{{ url_for('dashboard') }}">{{ session['user_name'] }}</a></li>
+            <li class="nav-item"><a class="nav1-link btn btn-danger text-white" href="{{ url_for('logout') }}">Logout</a></li>
+          {% else %}
+            <li class="nav-item"><a class="nav1-link" href="{{ url_for('login') }}">Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Vinnytsia Fountain</h1>
+    <img src="/static/images/vinnitsa.jpg" class="img-fluid rounded mx-auto d-block mb-4" alt="Vinnytsia Fountain">
+    <p class="text-center lead">Visit the Roshen light and music fountain, one of the largest in Europe, offering a magical and captivating experience.</p>
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Program:</h4>
+        <ul>
+          <li>Guided tour of Vinnytsia city center.</li>
+          <li>Evening light and music fountain show.</li>
+          <li>Tasting of local dishes.</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h4>Included:</h4>
+        <ul>
+          <li>Transportation.</li>
+          <li>Show tickets.</li>
+          <li>Tour guide.</li>
+        </ul>
+        <h4>Price: 1800 UAH</h4>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="{{ url_for('dashboard') }}" class="btn btn-success btn-lg">Book Now</a>
+    </div>
+    <div class="text-center mt-4">
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">Return to Home</a>
+    </div>
+
+    <!-- Interactive Map -->
+    <div id="map"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const map = L.map('map').setView([49.2328, 28.4846], 13); // Center of Vinnytsia
+
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      // Route locations
+      const locations = [
+        { coords: [49.2328, 28.4846], name: "Roshen Fountain" },
+        { coords: [49.2331, 28.4777], name: "Central Square" },
+        { coords: [49.2312, 28.4859], name: "Sadovskyi Theater" }
+      ];
+
+      // Add markers
+      locations.forEach(location => {
+        L.marker(location.coords)
+          .addTo(map)
+          .bindPopup(`<b>${location.name}</b>`);
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

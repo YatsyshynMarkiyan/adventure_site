@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excursion Website</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>                                                              
+</head>                                 
+<body>
+  <div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('index') }}">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="navbar-brand" href="#excursions">Excursions</a></li>
+          <li class="nav-item"><a class="navbar-brand" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="navbar-brand" href="#contact">Leave a Review</a></li>
+          <li class="nav-item"><a class="navbar-brand" href="{{ url_for('all_excursions') }}">Search Excursions</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          {% if 'user_id' in session %}
+            <li class="nav-item"><a class="navbar-brand" href="{{ url_for('dashboard') }}">{{ session['user_name'] }}</a></li>
+            <li class="nav-item"><a class="nav1-link btn btn-danger text-white" href="{{ url_for('logout') }}">Logout</a></li>
+          {% else %}
+            <li class="nav-item"><a class="navbar-brand" href="{{ url_for('login') }}">Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Section -->
+  <header class="bg-light text-center py-5">
+    <div class="container">
+      <h1>Welcome to the Excursion Platform</h1>
+      <p class="lead">Find the best tours and book your adventure today!</p>
+      <a href="#excursions" class="btn btn-primary btn-lg">View Excursions</a>
+    </div>
+  </header>
+
+  <!-- Excursions Section -->
+  <section id="excursions" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Our Excursions</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <img src="{{ url_for('static', filename='images/Karpatians.jpg') }}" class="card-img-top" alt="Carpathian Tour">
+            <div class="card-body">
+              <h5 class="card-title">Carpathian Tour</h5>
+              <p class="card-text">Visit the picturesque Carpathians with a professional guide.</p>
+                {% if 'user_id' in session %}
+                  <!-- If the user is logged in, redirect to the excursion page -->
+                  <a class="btn btn-success btn-lg" href="{{ url_for('excursion', name='Karpatians') }}">Learn More</a>
+                {% else %}
+                  <!-- If the user is not logged in, redirect to the registration page -->
+                  <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">Learn More</a>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card">
+            <img src="{{ url_for('static', filename='images/Lviv.jpg') }}" class="card-img-top" alt="Lviv Adventures">
+            <div class="card-body">
+              <h5 class="card-title">Lviv Adventures</h5>
+              <p class="card-text">Experience history and culture in the heart of Ukraine.</p>
+              {% if 'user_id' in session %}
+                <!-- If the user is logged in, redirect to the excursion page -->
+                <a class="btn btn-success btn-lg" href="{{ url_for('excursion', name='Lviv') }}">Learn More</a>
+              {% else %}
+                <!-- If the user is not logged in, redirect to the registration page -->
+                <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">Learn More</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+<div class="col-md-4">
+  <div class="card">
+    <img src="{{ url_for('static', filename='images/kiev.jpg') }}" class="card-img-top" alt="Kyiv Tour">
+    <div class="card-body">
+      <h5 class="card-title">Kyiv Tour</h5>
+      <p class="card-text">Learn about the capital of Ukraine with our experts.</p>
+      {% if 'user_id' in session %}
+        <!-- If the user is registered, redirect them to the excursion page -->
+        <a class="btn btn-success btn-lg" href="{{ url_for('excursion', name='Kiev') }}">More details</a>
+      {% else %}
+        <!-- If the user is not registered, redirect them to the registration page -->
+        <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">More details</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</div>
+<div class="row mt-4">
+  <div class="col-md-4">
+    <div class="card">
+      <img src="{{ url_for('static', filename='images/Odesa.jpg') }}" class="card-img-top" alt="Odesa">
+      <div class="card-body">
+        <h5 class="card-title">Odesa - The Pearl of the Sea</h5>
+        <p class="card-text">Discover the seaside and its unique atmosphere.</p>
+        {% if 'user_id' in session %}
+          <a class="btn btn-success btn-lg" href="{{ url_for('excursion', name='Odesa') }}">More details</a>
+        {% else %}
+          <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">More details</a>
+        {% endif %}
+     </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <img src="{{ url_for('static', filename='images/Chornobil.jpg') }}" class="card-img-top" alt="Chernobyl Tour">
+      <div class="card-body">
+        <h5 class="card-title">Chernobyl Tour</h5>
+        <p class="card-text">Learn more about the historic exclusion zone.</p>
+        {% if 'user_id' in session %}
+          <a class="btn btn-success btn-lg" href="{{ url_for('excursion', name='Chornobil') }}">More details</a>
+        {% else %}
+          <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">More details</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <img src="{{ url_for('static', filename='images/vinnitsa.jpg') }}" class="card-img-top" alt="Vinnytsia Fountain">
+      <div class="card-body">
+        <h5 class="card-title">Vinnytsia Fountain</h5>
+        <p class="card-text">The most famous light and music fountain in Ukraine.</p>
+        {% if 'user_id' in session %}
+          <a class="btn btn-success btn-lg" href="{{ url_for('excursion', name='Vinnitsa') }}">More details</a>
+        {% else %}
+          <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">More details</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card">
+        <img src="{{ url_for('static', filename='images/Буковель.jpg') }}" class="card-img-top" alt="Bukovel">
+        <div class="card-body">
+          <h5 class="card-title">Winter Fun in Bukovel</h5>
+          <p class="card-text">Skiing and snowboarding at Ukraine's best resort.</p>
+          {% if 'user_id' in session %}
+            <a class="btn btn-success btn-lg" href="{{ url_for('excursion', name='Bukovel') }}">More details</a>
+          {% else %}
+            <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">More details</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <img src="{{ url_for('static', filename='images/Kamin.jpg') }}" class="card-img-top" alt="Kamianets-Podilskyi">
+        <div class="card-body">
+          <h5 class="card-title">Kamianets-Podilskyi</h5>
+          <p class="card-text">A trip to the ancient fortress and breathtaking landscapes.</p>
+          {% if 'user_id' in session %}
+            <a class="btn btn-success btn-lg" href="{{ url_for('excursion', name='KaminPod') }}">More details</a>
+          {% else %}
+            <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">More details</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <img src="{{ url_for('static', filename='images/Poltava.jpg') }}" class="card-img-top" alt="Poltava Adventures">
+        <div class="card-body">
+          <h5 class="card-title">Poltava Adventures</h5>
+          <p class="card-text">Historic sites and the famous Poltava dumplings.</p>
+          {% if 'user_id' in session %}
+            <a class="btn btn-success btn-lg" href="{{ url_for('excursion', name='Poltava') }}">More details</a>
+          {% else %}
+            <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">More details</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+</section>
+<!-- "About Us" Section -->
+<section id="about" class="bg-light py-5">
+  <div class="container">
+    <h2 class="text-center mb-4">About Us</h2>
+    <p class="text-center">We are a team of professional guides providing unforgettable tours across Ukraine. Our mission is to make every journey exciting and informative.</p>
+  </div>
+</section>
+
+<!-- "Contact" Section -->
+<section id="contact" class="py-5">
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Feedback</h1>
+    <form id="feedbackForm">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Your name" required>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Your email" required>
+      </div>
+      <div class="mb-3">
+        <label for="mark" class="form-label">Site Rating</label>
+        <input type="text" class="form-control" id="mark" name="mark" placeholder="Your rating of the site" required>
+      </div>
+      <div class="mb-3">
+        <label for="message" class="form-label">Message</label>
+        <textarea class="form-control" id="message" name="message" rows="4" placeholder="Your message" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+    <div id="feedbackAlert" class="mt-3"></div>
+  </div>
+</section>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

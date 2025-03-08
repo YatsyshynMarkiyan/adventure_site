@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Account</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .table-container {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('index') }}">Home</a>
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="navbar-brand" href="{{ url_for('my_feedbacks') }}">My Reviews</a></li>
+        <li class="nav-item"><a class="navbar-brand" href="{{ url_for('index') }}#contact">Leave a Review</a></li>
+        <li class="nav-item"><a class="navbar-brand" href="{{ url_for('all_excursions') }}">Search Excursions</a></li>
+      </ul>
+      <ul class="navbar-nav">
+        {% if 'user_id' in session %}
+          <li class="nav-item"><a class="navbar-brand" href="{{ url_for('dashboard') }}">{{ session['user_name'] }}</a></li>
+          <li class="nav-item"><a class="btn btn-danger text-white" href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+          <li class="nav-item"><a class="navbar-brand" href="{{ url_for('login') }}">Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-5">
+    <h1>Personal Account</h1>
+    <p>Welcome, {{ user.name }}!</p>
+    <p>Your email: {{ user.email }}</p>
+    <p>Your balance: {{ user.bonus_amount }} UAH</p>
+    <p>Registration date: {{ user.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+  </div>
+
+  <div class="container table-container">
+    <h2>Booked Excursions</h2>
+    <table class="table table-striped" id="bookedTrips">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Price</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Filled via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="container table-container">
+    <h2>Available Excursions</h2>
+    <table class="table table-striped" id="availableTrips">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Filled via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+document.addEventListener("DOMContentLoaded", async function () {
+    const availableTripsTable = document.getElementById("availableTrips").querySelector("tbody");
+    const bookedTripsTable = document.getElementById("bookedTrips").querySelector("tbody");
+
+    try {
+        // Fetch excursion data from API
+        const excursionsResponse = await fetch("/api/excursions");
+        const excursions = await excursionsResponse.json();
+
+        // Fetch user's booked excursions from API
+        const userBookingsResponse = await fetch("/api/user/bookings");
+        const userBookings = await userBookingsResponse.json();
+
+        // Create a list of booked excursion IDs
+        const bookedIds = userBookings.map((booking) => booking.id);
+
+        // Populate the available excursions table
+        excursions.forEach((excursion) => {
+            if (!bookedIds.includes(excursion.id)) {
+                // Add to available excursions table
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td><img src="${excursion.image}" alt="${excursion.name}" style="width: 100px; height: auto;"></td>
+                    <td>${excursion.name}</td>
+                    <td>${excursion.location}</td>
+                    <td>${excursion.price} UAH</td>
+                    <td><button class="btn btn-success" data-id="${excursion.id}">Book Now</button></td>
+                `;
+                availableTripsTable.appendChild(row);
+
+                // Add event listener for booking button
+                row.querySelector("button").addEventListener("click", async function () {
+                    const excursionId = this.getAttribute("data-id");
+
+                    try {
+                        const bookResponse = await fetch(`/book/${excursionId}`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        });
+
+                        if (bookResponse.ok) {
+                            alert("Excursion successfully booked!");
+                            window.location.reload(); // Reload page after booking
+                        } else {
+                            const errorData = await bookResponse.json();
+                            alert(`Error: ${errorData.message}`);
+                        }
+                    } catch (error) {
+                        console.error("Booking error:", error);
+                        alert("Something went wrong. Please try again.");
+                    }
+                });
+            }
+        });
+
+        // Populate the booked excursions table
+        userBookings.forEach((booking) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td><img src="${booking.image}" alt="${booking.name}" style="width: 100px; height: auto;"></td>
+                <td>${booking.name}</td>
+                <td>${booking.location}</td>
+                <td>${booking.price} UAH</td>
+                <td>${booking.status}</td>
+            `;
+            bookedTripsTable.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Error loading excursions:", error);
+        alert("Failed to load excursions. Please try again later.");
+    }
+});
+
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excursion Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{{ url_for('index') }}">Home</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item"><a class="nav-link" href="#excursions">Excursions</a></li>
+              <li class="nav-item"><a class="nav-link" href="#about">About Us</a></li>
+              <li class="nav-item"><a class="nav-link" href="#contact">Leave a Review</a></li>
+              <a class="nav1-link" href="{{ url_for('all_excursions') }}">Excursion List</a>
+            </ul>
+            <ul class="navbar-nav">
+              {% if 'user_id' in session %}
+                <li class="nav-item"><a class="nav2-link" href="{{ url_for('dashboard') }}">{{ session['user_name'] }}</a></li>
+                <li class="nav-item"><a class="nav1-link btn btn-danger text-white" href="{{ url_for('logout') }}">Logout</a></li>
+              {% else %}
+                <li class="nav-item"><a class="nav1-link" href="{{ url_for('login') }}">Login</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Excursion List</h1>
+        <table id="excursionsTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Excursion Name</th>
+                    <th>Location</th>
+                    <th>Price (UAH)</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for excursion in excursions %}
+                <tr>
+                    <td><img src="{{ excursion.image }}" alt="{{ excursion.name }}" style="width: 100px; height: auto;"></td>
+                    <td>
+                        <a href="{{ url_for('excursion_detail', name=excursion.name1) }}">
+                            {{ excursion.name }}
+                        </a>
+                    </td>
+                    <td>{{ excursion.location }}</td>
+                    <td>{{ excursion.price }}</td>
+                    <td>{{ excursion.start_date }}</td>
+                    <td>{{ excursion.end_date }}</td>
+                    <td>{{ excursion.opis }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Library imports -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <!-- JavaScript for table sorting -->
+    <script>
+        $(document).ready(function () {
+            $('#excursionsTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/en.json" // Localization in English
+                }
+            });
+        });
+    </script>
+</body>
+</html>
