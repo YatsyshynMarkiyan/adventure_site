@@ -1,8 +1,10 @@
+from flask_migrate import Migrate
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from jinja2 import ChoiceLoader, FileSystemLoader
+
 
 # Initialize Flask
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -17,6 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 mail = Mail(app)
 
@@ -102,7 +105,7 @@ def register():
             flash('Email is already registered.', 'danger')
             return render_template('Register.html')
 
-        hashed_password = generate_password_hash(password)
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
         new_user = User(name=name, email=email, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
@@ -429,9 +432,9 @@ def excursion_details(excursion_id):
             return redirect(url_for('excursion_details', excursion_id=excursion_id))
 
         # Check user balance
-        if user.balance < excursion.price:
-            flash("Insufficient funds for booking.", "danger")
-            return redirect(url_for('excursion_details', excursion_id=excursion_id))
+    if user.bonus_amount < excursion.price:
+        flash("Insufficient funds for booking.", "danger")
+        return redirect(url_for('excursion_details', excursion_id=excursion_id))
 
         # Create a new booking
         booking = Booking(user_id=user.id, excursion_id=excursion.id)
