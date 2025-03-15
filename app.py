@@ -2,9 +2,17 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
+from jinja2 import ChoiceLoader, FileSystemLoader
 
 # Initialize Flask
 app = Flask(__name__, static_folder='static', template_folder='templates')
+
+# Configure Jinja2 to search for templates in both the root directory and the 'templates' folder
+app.jinja_loader = ChoiceLoader([
+    FileSystemLoader('.'),        # Allows searching for index.html in the root directory
+    FileSystemLoader('templates') # All other templates are searched in the 'templates' folder
+])
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
